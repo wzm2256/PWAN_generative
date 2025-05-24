@@ -1,3 +1,6 @@
+# The ConcatDataset class is the official Pytorch implementation.
+# We copy it here because it is not available in older Pytorch versions
+
 
 
 # Copyright (c) Meta Platforms, Inc. and affiliates.
@@ -10,10 +13,6 @@ from typing import List, Tuple
 
 import torch
 from torch.utils.data import Dataset
-
-# from torchtune import utils
-
-# log = utils.get_logger("DEBUG")
 
 
 class PartialDataset(Dataset):
@@ -97,8 +96,6 @@ class ConcatDataset(Dataset):
             self._indexes.append((cumulative_index, next_cumulative_index, idx))
             cumulative_index = next_cumulative_index
 
-        # log.debug(f"Datasets summary length: {self._len}")
-        # log.debug(f"Datasets indexes: {self._indexes}")
 
     def __getitem__(self, index: int) -> Tuple[List[int], List[int]]:
         for start, stop, dataset_index in self._indexes:
@@ -111,6 +108,9 @@ class ConcatDataset(Dataset):
 
 
 class ImageRGB(Dataset):
+    '''
+    Convert greyscale image to RGB.
+    '''
     def __init__(self, dataset, ):
         self.dataset = dataset
 
@@ -119,7 +119,6 @@ class ImageRGB(Dataset):
         return len(self.dataset)
 
     def __getitem__(self, index):
-        # return self.dataset[self.index_perm[index]]
         return self.dataset[index][0].repeat(3,1,1), self.dataset[index][1]
 
 
@@ -147,5 +146,4 @@ class TensorDataset(Dataset):
         return self.tensor.shape[0]
 
     def __getitem__(self, index):
-        # return self.dataset[self.index_perm[index]]
         return self.tensor[index]
